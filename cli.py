@@ -14,38 +14,32 @@ def show_error(response):
     print(f"Error: {message}")
 
 
-def ask_id():
+def ask_number(prompt, num_type, error_message):
     while True:
-        text = input("Enter the item ID: ")
+        text = input(prompt)
         try:
-            return int(text)
+            return num_type(text)
         except ValueError:
-            print("The ID must be a whole number.")
+            print(error_message)
+
+
+def ask_id():
+    return ask_number("Enter the item ID: ", int, "The ID must be a whole number.")
 
 
 def ask_price():
-    while True:
-        text = input("Enter the price: ")
-        try:
-            return float(text)
-        except ValueError:
-            print("The price must be a number.")
+    return ask_number("Enter the price: ", float, "The price must be a number.")
 
 
 def ask_stock():
-    while True:
-        text = input("Enter the stock: ")
-        try:
-            return int(text)
-        except ValueError:
-            print("The stock must be a whole number.")
+    return ask_number("Enter the stock: ", int, "The stock must be a whole number.")
 
 
 def view_all():
     response = requests.get(f"{API_URL}/inventory")
     items = response.json()
 
-    if len(items) == 0:
+    if not items:
         print("The inventory is empty.")
         return
 
@@ -111,7 +105,7 @@ def update_item():
             print("The stock must be a whole number.")
             return
 
-    if len(changes) == 0:
+    if not changes:
         print("Nothing to update.")
         return
 
@@ -162,7 +156,7 @@ def find_on_api():
     if answer.lower() != "y":
         return
 
-    if product["barcode"] == "":
+    if not product["barcode"]:
         print("This product has no barcode so it cannot be added.")
         return
 

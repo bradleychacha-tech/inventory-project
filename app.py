@@ -205,7 +205,6 @@ def search_by_name():
     return jsonify(product), 200
 
 
-# Get a product from OpenFoodFacts and add it to our inventory
 @app.route("/inventory/import/<barcode>", methods=["POST"])
 def import_item(barcode):
     data = request.get_json(silent=True)
@@ -240,5 +239,4 @@ def import_item(barcode):
 
 
 if __name__ == "__main__":
-    # debug=True turns on Flask debug mode
     app.run(debug=True)

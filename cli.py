@@ -8,14 +8,15 @@ API_URL = "http://127.0.0.1:5000"
 
 
 def show_item(item):
-    print("ID:", item["id"], "| Name:", item["product_name"], "| Brand:", item["brands"],
-          "| Price:", item["price"], "| Stock:", item["stock"])
+    print(f"ID: {item['id']} | Name: {item['product_name']} | Brand: {item['brands']} "
+          f"| Price: {item['price']} | Stock: {item['stock']}")
 
 
 def show_error(response):
     # the API sends back {"error": "..."} when something is wrong
     data = response.json()
-    print("Error:", data.get("error", "Something went wrong"))
+    message = data.get("error", "Something went wrong")
+    print(f"Error: {message}")
 
 
 def ask_id():
@@ -46,7 +47,7 @@ def ask_stock():
 
 
 def view_all():
-    response = requests.get(API_URL + "/inventory")
+    response = requests.get(f"{API_URL}/inventory")
     items = response.json()
 
     if len(items) == 0:
@@ -59,13 +60,13 @@ def view_all():
 
 def view_one():
     item_id = ask_id()
-    response = requests.get(API_URL + "/inventory/" + str(item_id))
+    response = requests.get(f"{API_URL}/inventory/{item_id}")
 
     if response.status_code == 200:
         item = response.json()
         show_item(item)
-        print("Barcode:", item["barcode"])
-        print("Ingredients:", item["ingredients_text"])
+        print(f"Barcode: {item['barcode']}")
+        print(f"Ingredients: {item['ingredients_text']}")
     else:
         show_error(response)
 
@@ -86,7 +87,7 @@ def add_item():
         "price": price,
         "stock": stock
     }
-    response = requests.post(API_URL + "/inventory", json=new_item)
+    response = requests.post(f"{API_URL}/inventory", json=new_item)
 
     if response.status_code == 201:
         print("Item added:")
@@ -119,7 +120,7 @@ def update_item():
         print("Nothing to update.")
         return
 
-    response = requests.patch(API_URL + "/inventory/" + str(item_id), json=changes)
+    response = requests.patch(f"{API_URL}/inventory/{item_id}", json=changes)
 
     if response.status_code == 200:
         print("Item updated:")
@@ -130,7 +131,7 @@ def update_item():
 
 def delete_item():
     item_id = ask_id()
-    response = requests.delete(API_URL + "/inventory/" + str(item_id))
+    response = requests.delete(f"{API_URL}/inventory/{item_id}")
 
     if response.status_code == 200:
         print("Item deleted.")
@@ -145,10 +146,10 @@ def find_on_api():
 
     if choice == "1":
         barcode = input("Enter the barcode: ").strip()
-        response = requests.get(API_URL + "/search/barcode/" + barcode, timeout=20)
+        response = requests.get(f"{API_URL}/search/barcode/{barcode}", timeout=20)
     elif choice == "2":
         name = input("Enter the product name: ").strip()
-        response = requests.get(API_URL + "/search/name", params={"name": name}, timeout=20)
+        response = requests.get(f"{API_URL}/search/name", params={"name": name}, timeout=20)
     else:
         print("Please choose 1 or 2.")
         return
@@ -158,9 +159,9 @@ def find_on_api():
         return
 
     product = response.json()
-    print("Found:", product["product_name"], "| Brand:", product["brands"])
-    print("Barcode:", product["barcode"])
-    print("Ingredients:", product["ingredients_text"])
+    print(f"Found: {product['product_name']} | Brand: {product['brands']}")
+    print(f"Barcode: {product['barcode']}")
+    print(f"Ingredients: {product['ingredients_text']}")
 
     # let the user save the product into the inventory
     answer = input("Add this product to the inventory? (y/n): ")
@@ -174,7 +175,7 @@ def find_on_api():
     price = ask_price()
     stock = ask_stock()
     response = requests.post(
-        API_URL + "/inventory/import/" + product["barcode"],
+        f"{API_URL}/inventory/import/{product['barcode']}",
         json={"price": price, "stock": stock},
         timeout=20
     )

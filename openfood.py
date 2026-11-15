@@ -20,7 +20,7 @@ def make_product(product, barcode):
 
 
 def get_product_by_barcode(barcode):
-    url = BASE_URL + "/api/v0/product/" + barcode + ".json"
+    url = f"{BASE_URL}/api/v0/product/{barcode}.json"
     response = requests.get(url, headers=HEADERS, timeout=10)
     data = response.json()
 
@@ -32,7 +32,7 @@ def get_product_by_barcode(barcode):
 
 
 def get_product_by_name(name):
-    url = BASE_URL + "/cgi/search.pl"
+    url = f"{BASE_URL}/cgi/search.pl"
     params = {
         "search_terms": name,
         "search_simple": 1,

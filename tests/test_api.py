@@ -1,6 +1,3 @@
-# test_api.py
-# Tests for the CRUD routes (GET, POST, PATCH, DELETE)
-
 from app import inventory
 
 
@@ -9,8 +6,6 @@ def test_home(client):
     assert response.status_code == 200
     assert response.get_json()["message"] == "Inventory API is running"
 
-
-# ---------- GET ----------
 
 def test_get_all_items(client):
     response = client.get("/inventory")
@@ -29,8 +24,6 @@ def test_get_item_not_found(client):
     assert response.status_code == 404
     assert "error" in response.get_json()
 
-
-# ---------- POST ----------
 
 def test_create_item(client):
     new_item = {
@@ -69,8 +62,6 @@ def test_create_item_negative_stock(client):
     assert response.status_code == 400
 
 
-# ---------- PATCH ----------
-
 def test_update_price_and_stock(client):
     response = client.patch("/inventory/1", json={"price": 1.80, "stock": 50})
     assert response.status_code == 200
@@ -78,7 +69,6 @@ def test_update_price_and_stock(client):
     data = response.get_json()
     assert data["price"] == 1.80
     assert data["stock"] == 50
-    # the other fields should stay the same
     assert data["product_name"] == "Brown Bread"
 
 
@@ -90,7 +80,6 @@ def test_update_item_not_found(client):
 def test_update_bad_price(client):
     response = client.patch("/inventory/1", json={"price": -3})
     assert response.status_code == 400
-    # price should not have changed
     assert inventory[0]["price"] == 1.50
 
 
@@ -105,14 +94,11 @@ def test_update_without_json(client):
     assert response.status_code == 400
 
 
-# ---------- DELETE ----------
-
 def test_delete_item(client):
     response = client.delete("/inventory/2")
     assert response.status_code == 200
     assert len(inventory) == 1
 
-    # it should be gone now
     response = client.get("/inventory/2")
     assert response.status_code == 404
 

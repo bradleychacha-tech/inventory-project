@@ -1,7 +1,3 @@
-# cli.py
-# Command line menu for the inventory API.
-# Start the API first (python app.py), then run this file.
-
 import requests
 
 API_URL = "http://127.0.0.1:5000"
@@ -13,7 +9,6 @@ def show_item(item):
 
 
 def show_error(response):
-    # the API sends back {"error": "..."} when something is wrong
     data = response.json()
     message = data.get("error", "Something went wrong")
     print(f"Error: {message}")
@@ -146,10 +141,10 @@ def find_on_api():
 
     if choice == "1":
         barcode = input("Enter the barcode: ").strip()
-        response = requests.get(f"{API_URL}/search/barcode/{barcode}", timeout=20)
+        response = requests.get(f"{API_URL}/search/barcode/{barcode}")
     elif choice == "2":
         name = input("Enter the product name: ").strip()
-        response = requests.get(f"{API_URL}/search/name", params={"name": name}, timeout=20)
+        response = requests.get(f"{API_URL}/search/name", params={"name": name})
     else:
         print("Please choose 1 or 2.")
         return
@@ -163,7 +158,6 @@ def find_on_api():
     print(f"Barcode: {product['barcode']}")
     print(f"Ingredients: {product['ingredients_text']}")
 
-    # let the user save the product into the inventory
     answer = input("Add this product to the inventory? (y/n): ")
     if answer.lower() != "y":
         return
@@ -176,8 +170,7 @@ def find_on_api():
     stock = ask_stock()
     response = requests.post(
         f"{API_URL}/inventory/import/{product['barcode']}",
-        json={"price": price, "stock": stock},
-        timeout=20
+        json={"price": price, "stock": stock}
     )
 
     if response.status_code == 201:
@@ -220,8 +213,6 @@ def main():
                 print("Invalid choice, please try again.")
         except requests.exceptions.ConnectionError:
             print("Cannot connect to the API. Is app.py running?")
-        except requests.exceptions.Timeout:
-            print("The API took too long to answer. Try again.")
 
 
 if __name__ == "__main__":

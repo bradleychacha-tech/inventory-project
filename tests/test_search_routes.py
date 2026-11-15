@@ -1,7 +1,3 @@
-# test_search_routes.py
-# Tests for the routes that use the external API.
-# We patch the functions inside app.py so no real request is made.
-
 from unittest.mock import patch
 
 import requests
@@ -15,8 +11,6 @@ fake_product = {
     "ingredients_text": "Sugar, palm oil, hazelnuts"
 }
 
-
-# ---------- search by barcode ----------
 
 @patch("app.get_product_by_barcode")
 def test_search_barcode_found(mock_find, client):
@@ -47,8 +41,6 @@ def test_search_barcode_api_down(mock_find, client):
     assert response.status_code == 502
     assert "error" in response.get_json()
 
-
-# ---------- search by name ----------
 
 @patch("app.get_product_by_name")
 def test_search_name_found(mock_find, client):
@@ -84,8 +76,6 @@ def test_search_name_api_down(mock_find, client):
     assert response.status_code == 502
 
 
-# ---------- import into inventory ----------
-
 @patch("app.get_product_by_barcode")
 def test_import_item(mock_find, client):
     mock_find.return_value = fake_product
@@ -98,7 +88,6 @@ def test_import_item(mock_find, client):
     assert data["product_name"] == "Nutella"
     assert data["price"] == 6.5
     assert data["stock"] == 20
-    # it should really be saved in the array
     assert len(inventory) == 3
 
 

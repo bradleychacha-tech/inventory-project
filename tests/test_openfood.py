@@ -1,7 +1,3 @@
-# test_openfood.py
-# Tests for openfood.py. We never call the real website,
-# we use Mock to pretend the API answered.
-
 from unittest.mock import Mock, patch
 
 import pytest
@@ -32,7 +28,6 @@ def test_barcode_found(mock_get):
     assert product["product_name"] == "Organic Almond Milk"
     assert product["brands"] == "Silk"
     assert product["barcode"] == "1234567890123"
-    # check that the barcode was used in the url
     url = mock_get.call_args[0][0]
     assert "1234567890123" in url
 
@@ -83,7 +78,6 @@ def test_name_found(mock_get):
 
     assert product["barcode"] == "3017620422003"
     assert product["product_name"] == "Nutella"
-    # check that the search word was sent
     params = mock_get.call_args[1]["params"]
     assert params["search_terms"] == "nutella"
 

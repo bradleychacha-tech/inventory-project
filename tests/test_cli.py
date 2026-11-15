@@ -1,7 +1,3 @@
-# test_cli.py
-# Tests for the CLI. We pretend the user types answers (patch input)
-# and pretend the API answers (patch requests).
-
 from unittest.mock import Mock, patch
 
 import requests
@@ -26,8 +22,6 @@ bread = {
     "stock": 30
 }
 
-
-# ---------- view ----------
 
 @patch("cli.requests.get")
 def test_view_all(mock_get, capsys):
@@ -82,8 +76,6 @@ def test_view_one_bad_id_asks_again(mock_get, mock_input, capsys):
     assert "Brown Bread" in output
 
 
-# ---------- add ----------
-
 @patch("builtins.input", side_effect=["Peanut Butter", "Pearl", "999", "Peanuts, salt", "4.25", "15"])
 @patch("cli.requests.post")
 def test_add_item(mock_post, mock_input, capsys):
@@ -123,8 +115,6 @@ def test_add_item_bad_price_asks_again(mock_post, mock_input, capsys):
     assert "price must be a number" in capsys.readouterr().out
     assert mock_post.call_args[1]["json"]["price"] == 2.5
 
-
-# ---------- update ----------
 
 @patch("builtins.input", side_effect=["1", "2.00", "40"])
 @patch("cli.requests.patch")
@@ -178,8 +168,6 @@ def test_update_item_not_found(mock_patch, mock_input, capsys):
     assert "Item not found" in capsys.readouterr().out
 
 
-# ---------- delete ----------
-
 @patch("builtins.input", side_effect=["2"])
 @patch("cli.requests.delete")
 def test_delete_item(mock_delete, mock_input, capsys):
@@ -200,8 +188,6 @@ def test_delete_item_not_found(mock_delete, mock_input, capsys):
 
     assert "Item not found" in capsys.readouterr().out
 
-
-# ---------- find on OpenFoodFacts ----------
 
 nutella = {
     "barcode": "3017620422003",
@@ -268,8 +254,6 @@ def test_find_invalid_choice(mock_input, capsys):
     assert "Please choose 1 or 2" in capsys.readouterr().out
 
 
-# ---------- main menu ----------
-
 @patch("builtins.input", side_effect=["1", "0"])
 @patch("cli.requests.get")
 def test_main_shows_items_then_exits(mock_get, mock_input, capsys):
@@ -298,5 +282,4 @@ def test_main_api_not_running(mock_get, mock_input, capsys):
 
     output = capsys.readouterr().out
     assert "Cannot connect to the API" in output
-    # the menu keeps working after the error
     assert "Goodbye" in output

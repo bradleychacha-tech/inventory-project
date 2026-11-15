@@ -1,6 +1,3 @@
-# conftest.py
-# Shared test setup. Every test starts with the same two items.
-
 import pytest
 from app import app, inventory
 
@@ -9,7 +6,6 @@ from app import app, inventory
 def client():
     app.config["TESTING"] = True
 
-    # reset the list so tests do not affect each other
     inventory.clear()
     inventory.append({
         "id": 1,

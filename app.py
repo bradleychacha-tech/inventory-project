@@ -1,6 +1,3 @@
-# app.py
-# Inventory API for a small retail shop.
-
 import requests
 from flask import Flask, jsonify, request
 
@@ -8,9 +5,6 @@ from openfood import get_product_by_barcode, get_product_by_name
 
 app = Flask(__name__)
 
-# This list is our fake database.
-# The product fields (name, brands, ingredients) look like OpenFoodFacts data.
-# id, price and stock are our own fields.
 inventory = [
     {
         "id": 1,
@@ -43,7 +37,6 @@ inventory = [
 
 
 def find_item(item_id):
-    # look for an item with this id, return None if it is not there
     for item in inventory:
         if item["id"] == item_id:
             return item
@@ -51,7 +44,6 @@ def find_item(item_id):
 
 
 def make_new_id():
-    # the new id is the biggest id we have plus 1
     biggest = 0
     for item in inventory:
         if item["id"] > biggest:
@@ -81,20 +73,16 @@ def add_to_inventory(barcode, name, brands, ingredients, price, stock):
     return new_item
 
 
-# ---------- Routes ----------
-
 @app.route("/")
 def home():
     return jsonify({"message": "Inventory API is running"})
 
 
-# GET all items
 @app.route("/inventory", methods=["GET"])
 def get_all_items():
     return jsonify(inventory), 200
 
 
-# GET one item
 @app.route("/inventory/<int:item_id>", methods=["GET"])
 def get_one_item(item_id):
     item = find_item(item_id)
@@ -103,7 +91,6 @@ def get_one_item(item_id):
     return jsonify(item), 200
 
 
-# POST a new item
 @app.route("/inventory", methods=["POST"])
 def create_item():
     data = request.get_json(silent=True)
@@ -129,7 +116,6 @@ def create_item():
     return jsonify(new_item), 201
 
 
-# PATCH (update) an item
 @app.route("/inventory/<int:item_id>", methods=["PATCH"])
 def update_item(item_id):
     item = find_item(item_id)
@@ -140,7 +126,6 @@ def update_item(item_id):
     if data is None:
         return jsonify({"error": "Please send JSON data"}), 400
 
-    # check the numbers first so we do not update only half of the item
     if "price" in data and not price_is_ok(data["price"]):
         return jsonify({"error": "price must be a number that is 0 or more"}), 400
     if "stock" in data and not stock_is_ok(data["stock"]):
@@ -162,7 +147,6 @@ def update_item(item_id):
     return jsonify(item), 200
 
 
-# DELETE an item
 @app.route("/inventory/<int:item_id>", methods=["DELETE"])
 def delete_item(item_id):
     item = find_item(item_id)
@@ -173,9 +157,6 @@ def delete_item(item_id):
     return jsonify({"message": "Item deleted"}), 200
 
 
-# ---------- Routes that use the OpenFoodFacts API ----------
-
-# Find a product by barcode (does not save it)
 @app.route("/search/barcode/<barcode>", methods=["GET"])
 def search_by_barcode(barcode):
     try:
@@ -188,7 +169,6 @@ def search_by_barcode(barcode):
     return jsonify(product), 200
 
 
-# Find a product by name (does not save it)
 @app.route("/search/name", methods=["GET"])
 def search_by_name():
     name = request.args.get("name")

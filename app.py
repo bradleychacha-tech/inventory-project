@@ -131,18 +131,10 @@ def update_item(item_id):
     if "stock" in data and not stock_is_ok(data["stock"]):
         return jsonify({"error": "stock must be a whole number that is 0 or more"}), 400
 
-    if "price" in data:
-        item["price"] = data["price"]
-    if "stock" in data:
-        item["stock"] = data["stock"]
-    if "product_name" in data:
-        item["product_name"] = data["product_name"]
-    if "brands" in data:
-        item["brands"] = data["brands"]
-    if "ingredients_text" in data:
-        item["ingredients_text"] = data["ingredients_text"]
-    if "barcode" in data:
-        item["barcode"] = data["barcode"]
+    fields = ["price", "stock", "product_name", "brands", "ingredients_text", "barcode"]
+    for field in fields:
+        if field in data:
+            item[field] = data[field]
 
     return jsonify(item), 200
 

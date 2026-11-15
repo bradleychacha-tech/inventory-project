@@ -38,7 +38,7 @@ def get_product_by_name(name):
     data = response.json()
 
     products = data.get("products", [])
-    if len(products) == 0:
+    if not products:
         return None
 
     first = products[0]

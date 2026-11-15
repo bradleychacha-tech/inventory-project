@@ -1,7 +1,10 @@
 # app.py
 # Inventory API for a small retail shop.
 
+import requests
 from flask import Flask, jsonify, request
+
+from openfood import get_product_by_barcode, get_product_by_name
 
 app = Flask(__name__)
 
@@ -168,6 +171,72 @@ def delete_item(item_id):
 
     inventory.remove(item)
     return jsonify({"message": "Item deleted"}), 200
+
+
+# ---------- Routes that use the OpenFoodFacts API ----------
+
+# Find a product by barcode (does not save it)
+@app.route("/search/barcode/<barcode>", methods=["GET"])
+def search_by_barcode(barcode):
+    try:
+        product = get_product_by_barcode(barcode)
+    except requests.exceptions.RequestException:
+        return jsonify({"error": "Could not reach OpenFoodFacts"}), 502
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+    return jsonify(product), 200
+
+
+# Find a product by name (does not save it)
+@app.route("/search/name", methods=["GET"])
+def search_by_name():
+    name = request.args.get("name")
+    if not name:
+        return jsonify({"error": "Please give a name, like /search/name?name=nutella"}), 400
+
+    try:
+        product = get_product_by_name(name)
+    except requests.exceptions.RequestException:
+        return jsonify({"error": "Could not reach OpenFoodFacts"}), 502
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+    return jsonify(product), 200
+
+
+# Get a product from OpenFoodFacts and add it to our inventory
+@app.route("/inventory/import/<barcode>", methods=["POST"])
+def import_item(barcode):
+    data = request.get_json(silent=True)
+    if data is None:
+        data = {}
+
+    price = data.get("price", 0)
+    stock = data.get("stock", 0)
+
+    if not price_is_ok(price):
+        return jsonify({"error": "price must be a number that is 0 or more"}), 400
+    if not stock_is_ok(stock):
+        return jsonify({"error": "stock must be a whole number that is 0 or more"}), 400
+
+    try:
+        product = get_product_by_barcode(barcode)
+    except requests.exceptions.RequestException:
+        return jsonify({"error": "Could not reach OpenFoodFacts"}), 502
+
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    new_item = add_to_inventory(
+        product["barcode"],
+        product["product_name"],
+        product["brands"],
+        product["ingredients_text"],
+        price,
+        stock
+    )
+    return jsonify(new_item), 201
 
 
 if __name__ == "__main__":

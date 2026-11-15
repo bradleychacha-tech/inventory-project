@@ -203,7 +203,7 @@ The tests never call the real OpenFoodFacts website. `unittest.mock` is used to 
 ## Debugging
 
 - `app.py` runs with `debug=True`, so Flask shows detailed errors and restarts when the code changes.
-- I tested every route in Postman as well. Set the body to `raw` + `JSON` for POST and PATCH.
+- You can also test every route in Postman. Set the body to `raw` + `JSON` for POST and PATCH.
 
 ## Git workflow
 

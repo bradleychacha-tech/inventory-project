@@ -62,12 +62,20 @@ The command line menu allows you to:
 5. Delete a product
 6. Search for a product
 0. Exit
+```
 
-Follow the instructions displayed on the screen to manage your inventory.
+Example of updating an item (option 4):
 
-## Running Tests
+```
+Choose an option: 4
+Enter the item ID: 1
+New price (press Enter to skip): 7.00
+New stock (press Enter to skip):
+Item updated:
+ID: 1 | Name: Nutella Hazelnut Spread | Brand: Ferrero | Price: 7.0 | Stock: 25
+```
 
-Run this command to test the project:
+## Tests
 
 ```bash
 python -m pytest

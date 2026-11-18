@@ -61,9 +61,3 @@ New stock (press Enter to skip):
 Item updated:
 ID: 1 | Name: Nutella Hazelnut Spread | Brand: Ferrero | Price: 7.0 | Stock: 25
 ```
-
-## Tests
-
-```bash
-python -m pytest
-```

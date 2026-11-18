@@ -4,7 +4,6 @@ A simple inventory system built with Flask. It allows users to add, view, update
 
 It also uses OpenFoodFacts to find product information using a barcode or product name.
 
-
 ## Setup
 
 1. Create a virtual environment:

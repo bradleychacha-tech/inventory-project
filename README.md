@@ -1,68 +1,73 @@
 # Inventory Management System
 
-A Flask REST API and a command line menu for managing a shop's inventory. Product details can be looked up from [OpenFoodFacts](https://world.openfoodfacts.org/). The data is kept in a Python list, so it resets when the server restarts.
+A simple inventory system built with Flask. It allows users to add, view, update, search, and delete shop products.
+
+It also uses OpenFoodFacts to find product information using a barcode or product name.
+
 
 ## Setup
 
-Create and activate a virtual environment (`venv\Scripts\activate` on Windows, `source venv/bin/activate` on Mac or Linux), then install the packages:
+1. Create a virtual environment:
+
+```bash
+python -m venv venv
+```
+
+2. Activate it:
+
+```bash
+source venv/bin/activate
+```
+
+3. Install the required packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run
+## Running the Project
 
-Start the API in one terminal:
+Open two terminals.
+
+**Terminal 1 – Start the API:**
 
 ```bash
 python app.py
 ```
 
-Start the CLI in a second terminal:
+**Terminal 2 – Start the CLI:**
 
 ```bash
 python cli.py
 ```
 
-## API endpoints
+## API Endpoints
 
-| Method | Route | What it does |
-|--------|-------|--------------|
-| GET | `/inventory` | Get all items |
-| GET | `/inventory/<id>` | Get one item |
-| POST | `/inventory` | Add an item (`product_name` required, plus `brands`, `barcode`, `ingredients_text`, `price`, `stock`) |
-| PATCH | `/inventory/<id>` | Update an item (for example `price` or `stock`) |
-| DELETE | `/inventory/<id>` | Delete an item |
-| GET | `/search/barcode/<barcode>` | Find a product on OpenFoodFacts by barcode |
-| GET | `/search/name?name=...` | Find a product on OpenFoodFacts by name |
-| POST | `/inventory/import/<barcode>` | Add an OpenFoodFacts product to the inventory (JSON: `price`, `stock`) |
+- `GET /inventory` – View products
+- `GET /inventory/<id>` – View one product
+- `POST /inventory` – Add a product
+- `PATCH /inventory/<id>` – Update a product
+- `DELETE /inventory/<id>` – Delete a product
+- `GET /search/barcode/<barcode>` – Search by barcode
+- `GET /search/name` – Search by name
+- `POST /inventory/import/<barcode>` – Import a product
+## CLI Menu
 
-Errors are returned as JSON, for example `{"error": "Item not found"}`.
+The command line menu allows you to:
 
-## CLI usage
-
-```
-1. View all items
-2. View one item
-3. Add a new item
+1. View all products
+2. View one product
+3. Add a product
 4. Update price or stock
-5. Delete an item
-6. Find a product on OpenFoodFacts
+5. Delete a product
+6. Search for a product
 0. Exit
-```
 
-Example of updating an item (option 4):
+Follow the instructions displayed on the screen to manage your inventory.
 
-```
-Choose an option: 4
-Enter the item ID: 1
-New price (press Enter to skip): 7.00
-New stock (press Enter to skip):
-Item updated:
-ID: 1 | Name: Nutella Hazelnut Spread | Brand: Ferrero | Price: 7.0 | Stock: 25
-```
+## Running Tests
 
-## Tests
+Run this command to test the project:
 
 ```bash
 python -m pytest
